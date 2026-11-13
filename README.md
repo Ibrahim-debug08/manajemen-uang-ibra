@@ -2,7 +2,15 @@
 
 Aplikasi keuangan pribadi berbasis frontend standalone. Semua data disimpan di **LocalStorage** perangkat — tanpa server, tanpa akun, tanpa database eksternal.
 
-## Cara membuka
+## Akses online (GitHub Pages)
+
+Aplikasi sudah terpasang di GitHub Pages dan bisa langsung dibuka dari Mac maupun HP:
+
+**https://ibrahim-debug08.github.io/manajemen-uang-ibra/**
+
+Karena berjalan di HTTPS, mode PWA aktif penuh: buka URL di Safari/Chrome HP lalu pilih **Add to Home Screen**. Setelah dibuka sekali, aplikasi tetap bisa dipakai offline lewat service worker. Data tetap hanya tersimpan di browser masing-masing perangkat.
+
+## Cara membuka secara lokal
 
 Cara paling sederhana: buka `index.html` langsung di browser Mac atau HP.
 
@@ -11,7 +19,7 @@ Cara paling sederhana: buka `index.html` langsung di browser Mac atau HP.
 - PIN bawaan juga dapat diubah di bagian paling atas file `assets/app.js` pada `APP_CONFIG.defaultPIN`.
 - Tombol **Kunci aplikasi** tersedia di pojok kanan atas dan di sidebar.
 
-> Catatan privasi: PIN ini adalah kunci lokal untuk mencegah akses iseng, bukan enkripsi kriptografis. Siapa pun yang memegang file/perangkat dan membuka DevTools dapat mengakses LocalStorage.
+> Catatan privasi: PIN ini adalah kunci lokal untuk mencegah akses iseng, bukan enkripsi kriptografis. Siapa pun yang memegang file/perangkat dan membuka DevTools dapat mengakses LocalStorage. Karena repo bersifat publik, PIN awal `2611` terlihat di source — sebaiknya ganti lewat **Pengaturan** dan jangan commit file backup berisi data asli.
 
 ## Install ke Home Screen HP
 
