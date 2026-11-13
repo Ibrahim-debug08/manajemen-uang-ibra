@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="MANAJEMEN UANG IBRA — catatan keuangan pribadi yang privat, lokal, dan rapi." />
+  <meta name="theme-color" content="#F6F7F4" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Uang Ibra" />
+  <title>MANAJEMEN UANG IBRA</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <script>
+    // Terapkan tema sebelum halaman digambar agar tidak berkedip.
+    (function () {
+      try {
+        const saved = localStorage.getItem('mui_theme_v1');
+        const dark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body class="min-h-full bg-app font-sans text-ink antialiased">
+  <!-- ============================================================
+       LAYAR KUNCI — akses eksklusif pemilik perangkat
+  ============================================================ -->
+  <section id="lock-screen" class="lock-screen" aria-label="Layar kunci aplikasi">
+    <div class="lock-visual">
+      <div class="lock-grid" aria-hidden="true"></div>
+      <div class="lock-orbit lock-orbit-a" aria-hidden="true"></div>
+      <div class="lock-orbit lock-orbit-b" aria-hidden="true"></div>
+
+      <div class="relative z-10 flex h-full flex-col">
+        <div class="flex items-center gap-3">
+          <span class="brand-mark brand-mark-on-dark"><i data-lucide="wallet" class="h-5 w-5"></i></span>
+          <div>
+            <p class="text-[15px] font-bold tracking-tight text-white">MANAJEMEN UANG IBRA</p>
+            <p class="text-[11px] font-medium tracking-[0.13em] text-white/45">PERSONAL FINANCE · LOKAL</p>
+          </div>
+        </div>
+
+        <div class="my-auto max-w-[480px] py-16">
+          <p class="lock-kicker">RUANG PRIBADI</p>
+          <h1 class="mt-5 text-[clamp(2.6rem,4.2vw,4.6rem)] font-extrabold leading-[0.98] tracking-[-0.055em] text-white">
+            Uangmu.<br />Aturanmu.<br /><span class="text-emerald-400">Tenang.</span>
+          </h1>
+          <p class="mt-7 max-w-[370px] text-[14px] leading-relaxed text-white/58">
+            Catatan keuangan ini hanya tersimpan di perangkatmu. Tidak ada akun, tidak ada cloud, tidak ada yang mengintip.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/10 pt-6">
+          <span class="flex items-center gap-2 text-[11px] font-semibold tracking-wide text-white/48">
+            <i data-lucide="shield-check" class="h-4 w-4 text-emerald-400"></i> 100% lokal
+          </span>
+          <span class="flex items-center gap-2 text-[11px] font-semibold tracking-wide text-white/48">
+            <i data-lucide="wifi-off" class="h-4 w-4 text-emerald-400"></i> Tanpa server
+          </span>
+          <span class="flex items-center gap-2 text-[11px] font-semibold tracking-wide text-white/48">
+            <i data-lucide="key-round" class="h-4 w-4 text-emerald-400"></i> PIN pribadi
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lock-panel">
+      <div class="lock-card">
+        <div class="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-soft text-primary lg:hidden">
+          <i data-lucide="wallet" class="h-6 w-6"></i>
+        </div>
+        <div class="mx-auto mb-7 flex h-14 w-14 items-center justify-center rounded-[18px] border border-line bg-surface2 text-primary shadow-soft">
+          <i data-lucide="lock-keyhole" class="h-6 w-6"></i>
+        </div>
+        <p class="text-center text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Akses pribadi</p>
+        <h2 class="mt-2 text-center text-[26px] font-extrabold tracking-[-0.035em] text-ink">Masukkan PIN</h2>
+        <p class="mx-auto mt-2 max-w-[280px] text-center text-[13px] leading-relaxed text-muted">
+          Empat digit untuk membuka catatan keuanganmu.
+        </p>
+
+        <div id="pin-wrap" class="mt-8">
+          <div id="pin-dots" class="flex justify-center gap-3" role="status" aria-live="polite" aria-label="PIN belum lengkap">
+            <span class="pin-dot" data-dot="0"></span>
+            <span class="pin-dot" data-dot="1"></span>
+            <span class="pin-dot" data-dot="2"></span>
+            <span class="pin-dot" data-dot="3"></span>
+          </div>
+          <p id="pin-error" class="mt-4 h-5 text-center text-[12px] font-semibold text-danger opacity-0" role="alert">
+            PIN salah. Coba lagi, ya.
+          </p>
+        </div>
+
+        <div id="pin-keypad" class="mx-auto mt-4 grid max-w-[290px] grid-cols-3 gap-x-4 gap-y-2.5">
+          <button class="pin-key" data-pin="1" aria-label="Angka 1">1</button>
+          <button class="pin-key" data-pin="2" aria-label="Angka 2">2</button>
+          <button class="pin-key" data-pin="3" aria-label="Angka 3">3</button>
+          <button class="pin-key" data-pin="4" aria-label="Angka 4">4</button>
+          <button class="pin-key" data-pin="5" aria-label="Angka 5">5</button>
+          <button class="pin-key" data-pin="6" aria-label="Angka 6">6</button>
+          <button class="pin-key" data-pin="7" aria-label="Angka 7">7</button>
+          <button class="pin-key" data-pin="8" aria-label="Angka 8">8</button>
+          <button class="pin-key" data-pin="9" aria-label="Angka 9">9</button>
+          <button class="pin-key pin-key-ghost" data-pin="clear" aria-label="Hapus semua angka">
+            <i data-lucide="eraser" class="mx-auto h-5 w-5"></i>
+          </button>
+          <button class="pin-key" data-pin="0" aria-label="Angka 0">0</button>
+          <button class="pin-key pin-key-ghost" data-pin="back" aria-label="Hapus satu angka">
+            <i data-lucide="delete" class="mx-auto h-5 w-5"></i>
+          </button>
+        </div>
+
+        <p id="pin-hint" class="mt-6 text-center text-[11px] leading-relaxed text-faint">
+          PIN awal: <span class="font-mono font-semibold text-muted">—</span>
+        </p>
+      </div>
+      <p class="mt-8 text-center text-[10px] font-semibold uppercase tracking-[0.15em] text-faint">
+        MANAJEMEN UANG IBRA · <span id="lock-year">2026</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       APLIKASI UTAMA
+  ============================================================ -->
+  <div id="app-shell" class="app-shell hidden">
+    <!-- Sidebar desktop -->
+    <aside class="sidebar" aria-label="Navigasi utama">
+      <div class="flex h-full flex-col">
+        <div class="flex items-center gap-3 px-2">
+          <span class="brand-mark"><i data-lucide="wallet" class="h-[19px] w-[19px]"></i></span>
+          <div class="min-w-0">
+            <p class="truncate text-[14px] font-extrabold tracking-[-0.025em] text-ink">Uang Ibra</p>
+            <p class="mt-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-faint">Personal finance</p>
+          </div>
+        </div>
+
+        <div class="mt-9">
+          <p class="nav-label">Menu utama</p>
+          <nav class="mt-2.5 space-y-1">
+            <button class="nav-link" data-route="dashboard">
+              <span class="nav-icon"><i data-lucide="layout-dashboard" class="h-[17px] w-[17px]"></i></span>
+              <span>Dashboard</span>
+            </button>
+            <button class="nav-link" data-route="add">
+              <span class="nav-icon"><i data-lucide="circle-plus" class="h-[17px] w-[17px]"></i></span>
+              <span>Catat transaksi</span>
+            </button>
+            <button class="nav-link" data-route="subscriptions">
+              <span class="nav-icon"><i data-lucide="refresh-cw" class="h-[17px] w-[17px]"></i></span>
+              <span>Langganan</span>
+            </button>
+            <button class="nav-link" data-route="history">
+              <span class="nav-icon"><i data-lucide="history" class="h-[17px] w-[17px]"></i></span>
+              <span>Riwayat &amp; backup</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="mt-8 rounded-[18px] border border-line bg-surface2 p-4">
+          <div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.13em] text-primary">
+            <span class="status-dot"></span> Data lokal
+          </div>
+          <p class="mt-2.5 text-[11px] leading-relaxed text-muted">
+            Semua catatan tersimpan aman di browser ini. Lakukan backup rutin agar data tidak hilang.
+          </p>
+          <button class="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-primary transition hover:text-primary-dark" data-route="history" data-scroll-backup="true">
+            Buka pusat backup <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
+          </button>
+        </div>
+
+        <div class="mt-auto space-y-1 pt-6">
+          <button class="nav-link" data-action="open-settings">
+            <span class="nav-icon"><i data-lucide="settings-2" class="h-[17px] w-[17px]"></i></span>
+            <span>Pengaturan</span>
+          </button>
+          <button class="nav-link" data-action="lock-app">
+            <span class="nav-icon"><i data-lucide="lock-keyhole" class="h-[17px] w-[17px]"></i></span>
+            <span>Kunci aplikasi</span>
+          </button>
+          <div class="flex items-center gap-2 px-3 pt-4">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[10px] font-extrabold text-white">IB</span>
+            <div>
+              <p class="text-[11px] font-bold text-ink" id="sidebar-owner">Ibra</p>
+              <p class="text-[9px] font-medium text-faint">Pemilik catatan</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Kolom konten -->
+    <div class="app-main">
+      <header class="app-header">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="brand-mark brand-mark-sm lg:hidden"><i data-lucide="wallet" class="h-4 w-4"></i></span>
+          <div class="min-w-0">
+            <p class="hidden text-[10px] font-bold uppercase tracking-[0.15em] text-faint sm:block">Ruang pribadi Ibra</p>
+            <p class="truncate text-[13px] font-bold tracking-tight text-ink sm:mt-0.5 sm:text-[12px] sm:font-medium sm:text-muted" id="header-greeting">
+              Data keuanganmu, aman di perangkat ini.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <div class="header-chip hidden xl:flex">
+            <i data-lucide="calendar-days" class="h-3.5 w-3.5"></i>
+            <span id="header-date">—</span>
+          </div>
+          <button class="icon-btn" data-action="toggle-theme" aria-label="Ganti tema terang atau gelap" title="Ganti tema">
+            <span class="dark:hidden"><i data-lucide="moon" class="h-[17px] w-[17px]"></i></span>
+            <span class="hidden dark:block"><i data-lucide="sun" class="h-[17px] w-[17px]"></i></span>
+          </button>
+          <button class="icon-btn" data-action="open-settings" aria-label="Buka pengaturan" title="Pengaturan">
+            <i data-lucide="settings-2" class="h-[17px] w-[17px]"></i>
+          </button>
+          <button class="icon-btn icon-btn-lock" data-action="lock-app" aria-label="Kunci aplikasi" title="Kunci aplikasi">
+            <i data-lucide="lock-keyhole" class="h-[17px] w-[17px]"></i>
+          </button>
+        </div>
+      </header>
+
+      <main id="view" class="view" tabindex="-1"></main>
+    </div>
+
+    <!-- Bottom nav mobile -->
+    <nav class="bottom-nav lg:hidden" aria-label="Navigasi bawah">
+      <button class="bottom-link" data-route="dashboard">
+        <span class="bottom-icon"><i data-lucide="layout-dashboard" class="h-[20px] w-[20px]"></i></span>
+        <span>Dashboard</span>
+      </button>
+      <button class="bottom-link bottom-add" data-route="add">
+        <span class="bottom-icon"><i data-lucide="plus" class="h-[21px] w-[21px]"></i></span>
+        <span>Catat</span>
+      </button>
+      <button class="bottom-link" data-route="subscriptions">
+        <span class="bottom-icon"><i data-lucide="refresh-cw" class="h-[20px] w-[20px]"></i></span>
+        <span>Langganan</span>
+      </button>
+      <button class="bottom-link" data-route="history">
+        <span class="bottom-icon"><i data-lucide="history" class="h-[20px] w-[20px]"></i></span>
+        <span>Riwayat</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="false"></div>
+  <div id="modal-root"></div>
+
+  <script src="assets/vendor/lucide.min.js"></script>
+  <script src="assets/vendor/chart.umd.min.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
